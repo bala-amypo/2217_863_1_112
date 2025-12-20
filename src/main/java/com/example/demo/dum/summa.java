@@ -1,28 +1,34 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "verification_rules",
-        uniqueConstraints = @UniqueConstraint(columnNames = "ruleCode")
+        name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email")
 )
-public class VerificationRule {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ruleCode;
+    private String fullName;
 
-    private String description;
+    private String email;
 
-    private String appliesToType;
+    private String password;
 
-    @Column(columnDefinition = "TEXT")
-    private String validationExpression;
+    private String role;
 
-    private Boolean active;
+    private LocalDateTime createdAt;
 
-    public VerificationRule() {}
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        if (role == null) role = "VIEWER";
+    }
+
+    public User() {}
 }
