@@ -21,7 +21,7 @@ public class User {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // ===== GETTERS & SETTERS =====
+   
 
     public Long getId() {
         return id;
