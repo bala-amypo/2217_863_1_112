@@ -25,10 +25,19 @@ public class CredentialRecordService {
     }
 
     public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-        CredentialRecord existing = getById(id);
-        updated.setId(existing.getId());
-        return repository.save(updated);
-    }
+    CredentialRecord existing = getById(id);
+
+    existing.setTitle(updated.getTitle());
+    existing.setIssuer(updated.getIssuer());
+    existing.setIssueDate(updated.getIssueDate());
+    existing.setExpiryDate(updated.getExpiryDate());
+    existing.setCredentialType(updated.getCredentialType());
+    existing.setStatus(updated.getStatus());
+    existing.setMetadataJson(updated.getMetadataJson());
+
+    return repository.save(existing);
+}
+
 
     public CredentialRecord getById(Long id) {
         return repository.findById(id)

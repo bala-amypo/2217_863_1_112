@@ -21,10 +21,17 @@ public class VerificationRuleService {
     }
 
     public VerificationRule updateRule(Long id, VerificationRule updated) {
-        VerificationRule existing = getById(id);
-        updated.setId(existing.getId());
-        return repository.save(updated);
-    }
+    VerificationRule existing = getById(id);
+
+    existing.setRuleCode(updated.getRuleCode());
+    existing.setDescription(updated.getDescription());
+    existing.setAppliesToType(updated.getAppliesToType());
+    existing.setValidationExpression(updated.getValidationExpression());
+    existing.setActive(updated.isActive());
+
+    return repository.save(existing);
+}
+
 
     public VerificationRule getById(Long id) {
         return repository.findById(id)
