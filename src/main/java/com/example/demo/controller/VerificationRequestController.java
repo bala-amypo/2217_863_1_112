@@ -1,43 +1,82 @@
-package com.example.demo.controller;
+package com.example.demo.service;
 
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.entity.CredentialRecord;
 import com.example.demo.entity.VerificationRequest;
-import com.example.demo.service.VerificationRequestService;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.VerificationRequestRepository;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/verification")
-public class VerificationRequestController {
+@Service
+public class VerificationRequestService {
 
-    private final VerificationRequestService service;
+    private final VerificationRequestRepository repository;
+    private final CredentialRecordService credentialService;
+    private final AuditTrailService auditTrailService;
 
-    public VerificationRequestController(VerificationRequestService service) {
-        this.service = service;
+    public VerificationRequestService(
+            VerificationRequestRepository repository,
+            CredentialRecordService credentialService,
+            AuditTrailService auditTrailService) {
+
+        this.repository = repository;
+        this.credentialService = credentialService;
+        this.auditTrailService = auditTrailService;
     }
 
-    @PostMapping
-    public VerificationRequest initiate(@RequestBody VerificationRequest request) {
-        return service.initiateVerification(request);
+    // Initiate verification
+    public VerificationRequest initiateVerification(VerificationRequest request) {
+        request.setStatus("PENDING");
+        request.setRequestedAt(LocalDateTime.now());
+        return repository.save(request);
     }
 
-    @PutMapping("/{id}/process")
-    public VerificationRequest process(@PathVariable Long id) {
-        return service.processVerification(id);
+    // Process verification
+    public VerificationRequest processVerification(Long id) {
+        VerificationRequest request = getById(id);
+
+        CredentialRecord credential =
+                credentialService.getCredentialByCode(request.getCredentialCode());
+
+        if (credential.getExpiryDate() != null &&
+                credential.getExpiryDate().isBefore(LocalDateTime.now().toLocalDate())) {
+
+            request.setStatus("FAILED");
+            request.setResultMessage("Credential expired");
+        } else {
+            request.setStatus("SUCCESS");
+            request.setResultMessage("Credential verified successfully");
+        }
+
+        request.setVerifiedAt(LocalDateTime.now());
+
+        AuditTrailRecord audit = new AuditTrailRecord();
+        audit.setCredentialId(credential.getId());
+        audit.setEventType("VERIFICATION");
+        audit.setEventTime(LocalDateTime.now());
+        audit.setDetails(request.getResultMessage());
+
+        auditTrailService.logEvent(audit);
+
+        return repository.save(request);
     }
 
-    @GetMapping("/{id}")
-    public VerificationRequest getById(@PathVariable Long id) {
-        return service.getById(id);
+    // ✅ REQUIRED BY CONTROLLER (FIX)
+    public VerificationRequest getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Verification request not found"));
     }
 
-    @GetMapping("/credential/{credentialId}")
-    public List<VerificationRequest> getByCredential(@PathVariable Long credentialId) {
-        return service.getRequestsByCredential(credentialId);
+    // Get requests by credential
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return repository.findByCredentialId(credentialId);
     }
 
-    @GetMapping
-    public List<VerificationRequest> getAll() {
-        return service.getAllRequests();
+    // Get all requests
+    public List<VerificationRequest> getAllRequests() {
+        return repository.findAll();
     }
 }

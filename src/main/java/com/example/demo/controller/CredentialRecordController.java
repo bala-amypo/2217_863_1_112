@@ -1,43 +1,59 @@
-package com.example.demo.controller;
+package com.example.demo.service;
 
 import com.example.demo.entity.CredentialRecord;
-import com.example.demo.service.CredentialRecordService;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.CredentialRecordRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/credentials")
-public class CredentialRecordController {
+@Service
+public class CredentialRecordService {
 
-    private final CredentialRecordService service;
+    private final CredentialRecordRepository repository;
 
-    public CredentialRecordController(CredentialRecordService service) {
-        this.service = service;
+    public CredentialRecordService(CredentialRecordRepository repository) {
+        this.repository = repository;
     }
 
-    @PostMapping
-    public CredentialRecord create(@RequestBody CredentialRecord record) {
-        return service.createCredential(record);
+    // Create credential
+    public CredentialRecord createCredential(CredentialRecord record) {
+        if (record.getStatus() == null) {
+            record.setStatus("VALID");
+        }
+        return repository.save(record);
     }
 
-    @PutMapping("/{id}")
-    public CredentialRecord update(@PathVariable Long id, @RequestBody CredentialRecord record) {
-        return service.updateCredential(id, record);
+    // Update credential (NO setId usage)
+    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
+        CredentialRecord existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
+
+        existing.setCredentialCode(updated.getCredentialCode());
+        existing.setCredentialType(updated.getCredentialType());
+        existing.setIssuer(updated.getIssuer());
+        existing.setIssueDate(updated.getIssueDate());
+        existing.setExpiryDate(updated.getExpiryDate());
+        existing.setStatus(updated.getStatus());
+        existing.setMetadataJson(updated.getMetadataJson());
+        existing.setHolderProfile(updated.getHolderProfile());
+
+        return repository.save(existing);
     }
 
-    @GetMapping("/holder/{holderId}")
-    public List<CredentialRecord> getByHolder(@PathVariable Long holderId) {
-        return service.getCredentialsByHolder(holderId);
+    // Get all credentials
+    public List<CredentialRecord> getAllCredentials() {
+        return repository.findAll();
     }
 
-    @GetMapping("/code/{code}")
-    public CredentialRecord getByCode(@PathVariable String code) {
-        return service.getCredentialByCode(code);
+    // Get credentials by holder
+    public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
+        return repository.findByHolderProfileId(holderId);
     }
 
-    @GetMapping
-    public List<CredentialRecord> getAll() {
-        return service.getAllCredentials();
+   
+    public CredentialRecord getCredentialByCode(String code) {
+        return repository.findByCredentialCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
     }
 }
