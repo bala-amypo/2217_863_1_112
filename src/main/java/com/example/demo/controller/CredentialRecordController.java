@@ -31,9 +31,9 @@ public class CredentialRecordController {
         return service.getCredentialsByHolder(holderId);
     }
 
-    @GetMapping("/code/{credentialCode}")
-    public CredentialRecord getByCode(@PathVariable String credentialCode) {
-        return service.getCredentialByCode(credentialCode);
+    @GetMapping("/code/{code}")
+    public CredentialRecord getByCode(@PathVariable String code) {
+        return service.getCredentialByCode(code);
     }
 
     @GetMapping

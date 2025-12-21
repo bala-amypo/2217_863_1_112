@@ -26,14 +26,14 @@ public class VerificationRequestController {
         return service.processVerification(id);
     }
 
+    @GetMapping("/{id}")
+    public VerificationRequest getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
     @GetMapping("/credential/{credentialId}")
     public List<VerificationRequest> getByCredential(@PathVariable Long credentialId) {
         return service.getRequestsByCredential(credentialId);
-    }
-
-    @GetMapping("/{id}")
-    public VerificationRequest getById(@PathVariable Long id) {
-        return service.getRequestById(id);
     }
 
     @GetMapping

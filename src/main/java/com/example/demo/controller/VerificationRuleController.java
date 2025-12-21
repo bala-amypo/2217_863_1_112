@@ -26,14 +26,14 @@ public class VerificationRuleController {
         return service.updateRule(id, rule);
     }
 
+    @GetMapping("/{id}")
+    public VerificationRule getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
     @GetMapping("/active")
     public List<VerificationRule> getActive() {
         return service.getActiveRules();
-    }
-
-    @GetMapping("/{id}")
-    public VerificationRule getById(@PathVariable Long id) {
-        return service.getRuleById(id);
     }
 
     @GetMapping
