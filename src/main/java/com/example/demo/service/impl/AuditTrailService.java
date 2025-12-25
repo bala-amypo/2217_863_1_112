@@ -21,7 +21,7 @@ public class AuditTrailService {
         return repository.save(record);
     }
 
-    public List<AuditTrailRecord> getByCredential(Long credentialId) {
+    public List<AuditTrailRecord> getByCredentialId(Long credentialId) {
         return repository.findByCredentialId(credentialId);
     }
 }

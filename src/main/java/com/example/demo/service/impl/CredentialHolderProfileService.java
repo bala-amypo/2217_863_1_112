@@ -4,8 +4,6 @@ import com.example.demo.entity.CredentialHolderProfile;
 import com.example.demo.repository.CredentialHolderProfileRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class CredentialHolderProfileService {
 
@@ -15,22 +13,13 @@ public class CredentialHolderProfileService {
         this.repository = repository;
     }
 
-    public CredentialHolderProfile create(CredentialHolderProfile profile) {
-        return repository.save(profile);
-    }
-
-    public CredentialHolderProfile getById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Holder not found"));
-    }
-
-    public CredentialHolderProfile updateStatus(Long id, boolean active) {
-        CredentialHolderProfile holder = getById(id);
-        holder.setActive(active);
+    public CredentialHolderProfile create(CredentialHolderProfile holder) {
+        holder.setActive(true);
         return repository.save(holder);
     }
 
-    public List<CredentialHolderProfile> getAll() {
-        return repository.findAll();
+    public CredentialHolderProfile getByHolderId(String holderId) {
+        return repository.findByHolderId(holderId)
+                .orElseThrow(() -> new RuntimeException("Holder not found"));
     }
 }

@@ -4,27 +4,26 @@ import com.example.demo.entity.CredentialRecord;
 import com.example.demo.repository.CredentialRecordRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class CredentialRecordServiceImpl implements CredentialRecordService {
+public class CredentialRecordService {
 
-    private final CredentialRecordRepository repo;
+    private final CredentialRecordRepository repository;
 
-    public CredentialRecordServiceImpl(CredentialRecordRepository repo) {
-        this.repo = repo;
+    public CredentialRecordService(CredentialRecordRepository repository) {
+        this.repository = repository;
     }
 
     public CredentialRecord issue(CredentialRecord record) {
-        return repo.save(record);
+        return repository.save(record);
     }
 
     public List<CredentialRecord> getAll() {
-        return repo.findAll();
+        return repository.findAll();
     }
 
-    public List<CredentialRecord> getByHolderId(Long id) {
-        return repo.findByHolderId(id);
+    public List<CredentialRecord> getByHolderId(Long holderId) {
+        return repository.findByHolderId(holderId);
     }
 }

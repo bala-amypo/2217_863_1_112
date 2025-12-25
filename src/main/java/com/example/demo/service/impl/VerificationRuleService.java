@@ -15,15 +15,7 @@ public class VerificationRuleService {
         this.repository = repository;
     }
 
-    public VerificationRule create(VerificationRule rule) {
-        return repository.save(rule);
-    }
-
-    public List<VerificationRule> getActiveRules() {
-        return repository.findByActiveTrue();
-    }
-
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public List<VerificationRule> getAll() {
+        return repository.findAll();
     }
 }

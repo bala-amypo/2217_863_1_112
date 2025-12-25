@@ -16,13 +16,17 @@ public class VerificationRequestService {
         this.repository = repository;
     }
 
-    public VerificationRequest initiate(VerificationRequest request) {
+    public VerificationRequest initiateVerification(VerificationRequest request) {
         request.setStatus("PENDING");
         request.setVerifiedAt(LocalDateTime.now());
         return repository.save(request);
     }
 
-    public List<VerificationRequest> getByCredential(Long credentialId) {
+    public List<VerificationRequest> getAll() {
+        return repository.findAll();
+    }
+
+    public List<VerificationRequest> getByCredentialId(Long credentialId) {
         return repository.findByCredentialId(credentialId);
     }
 }
