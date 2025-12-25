@@ -8,41 +8,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class CredentialRecordService {
+public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    private final CredentialRecordRepository repository;
+    private final CredentialRecordRepository repo;
 
-    public CredentialRecordService(CredentialRecordRepository repository) {
-        this.repository = repository;
+    public CredentialRecordServiceImpl(CredentialRecordRepository repo) {
+        this.repo = repo;
     }
 
-    public CredentialRecord create(CredentialRecord credential) {
-        credential.setStatus("ACTIVE");
-        return repository.save(credential);
+    public CredentialRecord issue(CredentialRecord record) {
+        return repo.save(record);
     }
 
-    public CredentialRecord update(Long id, CredentialRecord updated) {
-        CredentialRecord existing = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Credential not found"));
-
-        existing.setTitle(updated.getTitle());
-        existing.setIssuer(updated.getIssuer());
-        existing.setExpiryDate(updated.getExpiryDate());
-        existing.setMetadataJson(updated.getMetadataJson());
-
-        return repository.save(existing);
+    public List<CredentialRecord> getAll() {
+        return repo.findAll();
     }
 
-    public List<CredentialRecord> getByHolder(Long holderId) {
-        return repository.findByHolderId(holderId);
-    }
-
-    public CredentialRecord getByCode(String code) {
-        return repository.findByCredentialCode(code)
-                .orElseThrow(() -> new RuntimeException("Credential not found"));
-    }
-
-    public List<CredentialRecord> findExpiredBefore(LocalDate date) {
-        return repository.findExpiredBefore(date);
+    public List<CredentialRecord> getByHolderId(Long id) {
+        return repo.findByHolderId(id);
     }
 }
