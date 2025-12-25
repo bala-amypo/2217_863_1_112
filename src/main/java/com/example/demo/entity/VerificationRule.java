@@ -1,8 +1,66 @@
-package com.example.demo.repository;
+package com.example.demo.entity;
 
-import com.example.demo.entity.VerificationRule;
-import org.springframework.data.jpa.repository.JpaRepository;
+import jakarta.persistence.*;
 
-public interface VerificationRuleRepository
-        extends JpaRepository<VerificationRule, Long> {
+@Entity
+@Table(name = "verification_rules")
+public class VerificationRule {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String ruleCode;
+
+    private String description;
+    private String appliesToType;
+    private String validationExpression;
+    private boolean active = true;
+
+ 
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getRuleCode() {
+        return ruleCode;
+    }
+
+    public void setRuleCode(String ruleCode) {
+        this.ruleCode = ruleCode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAppliesToType() {
+        return appliesToType;
+    }
+
+    public void setAppliesToType(String appliesToType) {
+        this.appliesToType = appliesToType;
+    }
+
+    public String getValidationExpression() {
+        return validationExpression;
+    }
+
+    public void setValidationExpression(String validationExpression) {
+        this.validationExpression = validationExpression;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }
