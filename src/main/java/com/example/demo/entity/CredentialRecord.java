@@ -11,32 +11,21 @@ public class CredentialRecord {
     private Long id;
 
     private Long holderId;
-    private String credentialCode;
     private String title;
     private String issuer;
-    private LocalDate issueDate;
     private LocalDate expiryDate;
-    private String credentialType;
-    private String status;
-
-    @Column(columnDefinition = "TEXT")
     private String metadataJson;
 
-    @PrePersist
-    public void prePersist() {
-        if (status == null) status = "ACTIVE";
-    }
-
-    // getters & setters (all)
     public Long getId() { return id; }
     public Long getHolderId() { return holderId; }
-    public String getCredentialCode() { return credentialCode; }
-    public String getStatus() { return status; }
+    public String getTitle() { return title; }
+    public String getIssuer() { return issuer; }
     public LocalDate getExpiryDate() { return expiryDate; }
+    public String getMetadataJson() { return metadataJson; }
 
-    public void setId(Long id) { this.id = id; }
     public void setHolderId(Long holderId) { this.holderId = holderId; }
-    public void setCredentialCode(String credentialCode) { this.credentialCode = credentialCode; }
-    public void setStatus(String status) { this.status = status; }
+    public void setTitle(String title) { this.title = title; }
+    public void setIssuer(String issuer) { this.issuer = issuer; }
     public void setExpiryDate(LocalDate expiryDate) { this.expiryDate = expiryDate; }
+    public void setMetadataJson(String metadataJson) { this.metadataJson = metadataJson; }
 }
