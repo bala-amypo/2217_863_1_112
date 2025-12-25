@@ -8,8 +8,5 @@ import java.util.Optional;
 
 public interface VerificationRuleRepository
         extends JpaRepository<VerificationRule, Long> {
-
-    Optional<VerificationRule> findByRuleCode(String ruleCode);
-
     List<VerificationRule> findByActiveTrue();
 }

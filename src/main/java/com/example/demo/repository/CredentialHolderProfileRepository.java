@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface CredentialHolderProfileRepository
         extends JpaRepository<CredentialHolderProfile, Long> {
-
     Optional<CredentialHolderProfile> findByHolderId(String holderId);
-
 }
+
