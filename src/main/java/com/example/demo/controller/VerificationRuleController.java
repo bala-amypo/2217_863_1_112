@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/rules")
+
 @SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Verification Rules", description = "Manage verification rules")
 public class VerificationRuleController {

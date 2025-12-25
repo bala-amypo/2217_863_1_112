@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/holders")
+
 @SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Credential Holders", description = "Manage credential holder profiles")
 public class CredentialHolderController {
