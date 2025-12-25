@@ -14,3 +14,9 @@ public class JwtResponse {
         return token;
     }
 }
+UserService.java
+│   ├── CredentialRecordService.java
+│   ├── CredentialHolderProfileService.java
+│   ├── VerificationRequestService.java
+│   ├── VerificationRuleService.java
+│   └── AuditTrailService.java
