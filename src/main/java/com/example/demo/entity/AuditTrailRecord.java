@@ -11,18 +11,15 @@ public class AuditTrailRecord {
     private Long id;
 
     private Long credentialId;
-    private String eventType;
-
+    private String action;
     private LocalDateTime loggedAt;
 
-    @PrePersist
-    public void prePersist() {
-        loggedAt = LocalDateTime.now();
-    }
-
+    public Long getId() { return id; }
     public Long getCredentialId() { return credentialId; }
+    public String getAction() { return action; }
     public LocalDateTime getLoggedAt() { return loggedAt; }
 
     public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
-    public void setEventType(String eventType) { this.eventType = eventType; }
+    public void setAction(String action) { this.action = action; }
+    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
 }
