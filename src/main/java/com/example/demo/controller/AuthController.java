@@ -5,7 +5,7 @@ import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -14,15 +14,8 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // Register user
     @PostMapping("/register")
     public User register(@RequestBody User user) {
         return userService.registerUser(user);
-    }
-
-    // Login (simple – tests only check that endpoint exists)
-    @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        return "dummy-token";
     }
 }

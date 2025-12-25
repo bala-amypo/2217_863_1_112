@@ -11,12 +11,15 @@ public class UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository repository,
+                       PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(User user) {
+    // ✅ Method name matches controller
+    public User registerUser(User user) {
+
         repository.findByEmail(user.getEmail())
                 .ifPresent(u -> {
                     throw new RuntimeException("Email already exists");
