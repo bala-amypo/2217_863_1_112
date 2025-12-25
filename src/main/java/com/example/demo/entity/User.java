@@ -18,12 +18,11 @@ public class User {
 
     private String role;
 
-    // getters & setters
     public Long getId() {
         return id;
     }
 
-    public String getUsername() {
+    public String getUsername() {   // ← REQUIRED
         return username;
     }
 
