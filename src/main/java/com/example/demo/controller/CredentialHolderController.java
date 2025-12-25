@@ -1,38 +1,60 @@
-package com.example.demo.controller;
+package com.example.demo.entity;
 
-import com.example.demo.entity.CredentialHolderProfile;
-import com.example.demo.service.CredentialHolderProfileService;
-import org.springframework.web.bind.annotation.*;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/holders")
-public class CredentialHolderController {
-
-    private final CredentialHolderProfileService service;
-
-    public CredentialHolderController(CredentialHolderProfileService service) {
-        this.service = service;
+@Entity
+@Table(name = "credential_holder_profiles")
+public class CredentialHolderProfile {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(unique = true)
+    private String holderId;
+    
+    private String fullName;
+    
+    @Column(unique = true)
+    private String email;
+    
+    private String organization;
+    
+    @Column(nullable = false)
+    private Boolean active = true;
+    
+    @Column(updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+    
+    public CredentialHolderProfile() {}
+    
+    public CredentialHolderProfile(String holderId, String fullName, String email, String organization, Boolean active) {
+        this.holderId = holderId;
+        this.fullName = fullName;
+        this.email = email;
+        this.organization = organization;
+        this.active = active != null ? active : true;
     }
-
-    @PostMapping
-    public CredentialHolderProfile create(@RequestBody CredentialHolderProfile profile) {
-        return service.createHolder(profile);
-    }
-
-    @GetMapping("/{id}")
-    public CredentialHolderProfile getById(@PathVariable Long id) {
-        return service.getHolderById(id);
-    }
-
-    @GetMapping
-    public List<CredentialHolderProfile> getAll() {
-        return service.getAllHolders();
-    }
-
-    @PutMapping("/{id}/status")
-    public void updateStatus(@PathVariable Long id, @RequestParam boolean active) {
-        service.updateHolderStatus(id, active);
-    }
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getHolderId() { return holderId; }
+    public void setHolderId(String holderId) { this.holderId = holderId; }
+    
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    
+    public String getOrganization() { return organization; }
+    public void setOrganization(String organization) { this.organization = organization; }
+    
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
