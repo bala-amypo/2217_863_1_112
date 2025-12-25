@@ -4,19 +4,18 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.annotation.WebServlet;
-
 import java.io.IOException;
+import java.io.PrintWriter;
 
-@WebServlet(name = "SimpleStatusServlet", urlPatterns = "/status")
 public class SimpleStatusServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        response.setContentType("text/plain");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().write("Digital Credential Verification Engine is running successfully");
+        resp.setContentType("text/plain");
+        PrintWriter writer = resp.getWriter();
+        writer.write("Digital Credential Verification Engine is running");
+        writer.flush();
     }
 }
