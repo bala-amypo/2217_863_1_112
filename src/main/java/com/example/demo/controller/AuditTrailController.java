@@ -1,54 +1,33 @@
-package com.example.demo.entity;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.service.AuditTrailService;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "audit_trail_records")
-public class AuditTrailRecord {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(nullable = false)
-    private Long credentialId;
-    
-    private String eventType;
-    
-    private String details;
-    
-    @Column(nullable = false)
-    private LocalDateTime loggedAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        if (loggedAt == null) {
-            loggedAt = LocalDateTime.now();
-        }
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/audit")
+public class AuditTrailController {
+
+    private final AuditTrailService service;
+
+    public AuditTrailController(AuditTrailService service) {
+        this.service = service;
     }
-    
-    public AuditTrailRecord() {}
-    
-    public AuditTrailRecord(Long credentialId, String eventType, String details) {
-        this.credentialId = credentialId;
-        this.eventType = eventType;
-        this.details = details;
-        this.loggedAt = LocalDateTime.now();
+
+    @PostMapping
+    public AuditTrailRecord log(@RequestBody AuditTrailRecord record) {
+        return service.logEvent(record);
     }
-    
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    
-    public Long getCredentialId() { return credentialId; }
-    public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
-    
-    public String getEventType() { return eventType; }
-    public void setEventType(String eventType) { this.eventType = eventType; }
-    
-    public String getDetails() { return details; }
-    public void setDetails(String details) { this.details = details; }
-    
-    public LocalDateTime getLoggedAt() { return loggedAt; }
-    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
+
+    @GetMapping("/credential/{credentialId}")
+    public List<AuditTrailRecord> getByCredential(@PathVariable Long credentialId) {
+        return service.getLogsByCredential(credentialId);
+    }
+
+    @GetMapping
+    public List<AuditTrailRecord> getAll() {
+        return service.getAllLogs();
+    }
 }
