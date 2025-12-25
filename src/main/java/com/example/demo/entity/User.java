@@ -50,4 +50,9 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+    // ✅ Spring Security uses this as username
+public String getUsername() {
+    return this.email;
+}
+
 }
