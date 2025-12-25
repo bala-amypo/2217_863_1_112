@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-// ❌ @RestController   <-- MUST BE GONE
-// ❌ @RequestMapping("/api/audit")  <-- MUST BE GONE
+
 
 @SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Audit Trail", description = "View audit logs")

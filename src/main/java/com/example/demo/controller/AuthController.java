@@ -13,8 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/auth")
+
 @Tag(name = "Authentication", description = "Authentication endpoints for login and registration")
 public class AuthController {
     
