@@ -17,8 +17,25 @@ public class User {
     private String password;
     private String role = "VIEWER";
 
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public String getRole() { return role; }
-    public void setPassword(String password) { this.password = password; }
+    // ===== REQUIRED GETTERS / SETTERS =====
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public String getPassword() {
+        return password;   // 🔥 THIS FIXES YOUR ERROR
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
