@@ -10,4 +10,3 @@ public interface VerificationRequestRepository
         extends JpaRepository<VerificationRequest, Long> {
     List<VerificationRequest> findByCredentialId(Long credentialId);
 }
-
