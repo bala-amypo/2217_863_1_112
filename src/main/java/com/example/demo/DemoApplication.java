@@ -19,7 +19,9 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 
-    // ✅ EXISTING SERVLET BEAN (UNCHANGED)
+    // =========================
+    // EXISTING SERVLET BEAN
+    // =========================
     @Bean
     public ServletRegistrationBean<SimpleStatusServlet> statusServlet() {
         ServletRegistrationBean<SimpleStatusServlet> bean =
@@ -28,7 +30,9 @@ public class DemoApplication {
         return bean;
     }
 
-    // ✅ ADD THIS BEAN — FIXES YOUR ERROR
+    // =========================
+    // AUDIT TRAIL SERVICE BEAN
+    // =========================
     @Bean
     public AuditTrailService auditTrailService() {
         return new AuditTrailService() {
@@ -44,7 +48,8 @@ public class DemoApplication {
             @Override
             public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
                 return store.stream()
-                        .filter(r -> r.getCredentialId().equals(credentialId))
+                        .filter(r -> r.getCredentialId() != null
+                                && r.getCredentialId().equals(credentialId))
                         .toList();
             }
 
