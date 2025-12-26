@@ -20,5 +20,7 @@ public class VerificationRequest {
     public Long getId() { return id; }
     public Long getCredentialId() { return credentialId; }
     public void setStatus(String status) { this.status = status; }
-    public void setVerifiedAt(LocalDateTime t) { this.verifiedAt = t; }
+    public void setVerifiedAt(LocalDateTime verifiedAt) {
+        this.verifiedAt = verifiedAt;
+    }
 }

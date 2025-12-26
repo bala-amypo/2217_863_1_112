@@ -25,7 +25,6 @@ public class CredentialHolderProfile {
     public Long getId() { return id; }
     public String getHolderId() { return holderId; }
     public void setHolderId(String holderId) { this.holderId = holderId; }
-    public String getEmail() { return email; }
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 }
