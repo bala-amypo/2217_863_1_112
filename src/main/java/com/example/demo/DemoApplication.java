@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.service.AuditTrailService;
-import com.example.demo.service.UserService;
 import com.example.demo.servlet.SimpleStatusServlet;
 
 import java.util.ArrayList;
@@ -20,9 +19,7 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 
-    // =======================
-    // EXISTING SERVLET BEAN
-    // =======================
+    // ✅ EXISTING SERVLET BEAN (UNCHANGED)
     @Bean
     public ServletRegistrationBean<SimpleStatusServlet> statusServlet() {
         ServletRegistrationBean<SimpleStatusServlet> bean =
@@ -31,9 +28,7 @@ public class DemoApplication {
         return bean;
     }
 
-    // =======================
-    // AUDIT TRAIL SERVICE BEAN
-    // =======================
+    // ✅ ADD THIS BEAN — FIXES YOUR ERROR
     @Bean
     public AuditTrailService auditTrailService() {
         return new AuditTrailService() {
@@ -49,35 +44,13 @@ public class DemoApplication {
             @Override
             public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
                 return store.stream()
-                        .filter(r -> r.getCredentialId() != null
-                                && r.getCredentialId().equals(credentialId))
+                        .filter(r -> r.getCredentialId().equals(credentialId))
                         .toList();
             }
 
             @Override
             public List<AuditTrailRecord> getAllLogs() {
                 return store;
-            }
-        };
-    }
-
-    // =======================
-    // USER SERVICE BEAN ✅ FIXES NEW ERROR
-    // =======================
-    @Bean
-    public UserService userService() {
-        return new UserService() {
-
-            @Override
-            public Object register(Object request) {
-                // dummy implementation
-                return request;
-            }
-
-            @Override
-            public Object login(Object request) {
-                // dummy implementation
-                return "LOGIN_SUCCESS";
             }
         };
     }
