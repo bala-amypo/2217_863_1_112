@@ -1,41 +1,121 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String fullName;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String role = "VIEWER";
 
-    // ===== REQUIRED GETTERS / SETTERS =====
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    // ✅ 1. Default constructor (REQUIRED by JPA)
+    public User() {
+    }
+
+    // ✅ 2. Constructor: (fullName, email, password, role)
+    public User(Long id,String fullName, String email, String password, String role) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    // ✅ 3. Constructor: (fullName, email, password, role, createdAt)
+    public User(String fullName, String email, String password, String role, LocalDateTime createdAt) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
+
+    // ✅ 4. Constructor: (id, fullName, email, password, role, createdAt)
+    public User(Long id, String fullName, String email, String password, String role, LocalDateTime createdAt) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
+
+    // ✅ Auto-set createdAt before persisting
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.role == null || this.role.isEmpty()) {
+            this.role = "VIEWER";
+        }
+    }
+
+    // ===== Getters & Setters =====
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getRole() {
-        return role;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
-        return password;   // 🔥 THIS FIXES YOUR ERROR
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
