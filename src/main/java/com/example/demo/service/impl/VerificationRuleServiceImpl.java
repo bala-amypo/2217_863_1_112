@@ -1,41 +1,51 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.VerificationRule;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.VerificationRuleRepository;
+import com.example.demo.service.VerificationRuleService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class VerificationRuleServiceImpl {
-
-    private final VerificationRuleRepository repo;
-
-    public VerificationRuleServiceImpl(VerificationRuleRepository repo) {
-        this.repo = repo;
+public class VerificationRuleServiceImpl implements VerificationRuleService {
+    
+    private final VerificationRuleRepository ruleRepository;
+    
+    public VerificationRuleServiceImpl(VerificationRuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
     }
-
-    // Create or update rule
+    
+    @Override
     public VerificationRule createRule(VerificationRule rule) {
-        return repo.save(rule);
+        return ruleRepository.save(rule);
     }
-
-    // Get all rules
-    public List<VerificationRule> getAllRules() {
-        return repo.findAll();
+    
+    @Override
+    public VerificationRule updateRule(Long id, VerificationRule updatedRule) {
+        VerificationRule existing = ruleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rule not found with id: " + id));
+        
+        if (updatedRule.getRuleCode() != null) {
+            existing.setRuleCode(updatedRule.getRuleCode());
+        }
+        if (updatedRule.getDescription() != null) {
+            existing.setDescription(updatedRule.getDescription());
+        }
+        if (updatedRule.getActive() != null) {
+            existing.setActive(updatedRule.getActive());
+        }
+        
+        return ruleRepository.save(existing);
     }
-
-    // Get only active rules
+    
+    @Override
     public List<VerificationRule> getActiveRules() {
-        return repo.findAll()
-                .stream()
-                .filter(r -> Boolean.TRUE.equals(r.getActive()))
-                .collect(Collectors.toList());
+        return ruleRepository.findByActiveTrue();
     }
-
-    // Get rule by id
-    public VerificationRule getRuleById(Long id) {
-        return repo.findById(id).orElse(null);
+    
+    @Override
+    public List<VerificationRule> getAllRules() {
+        return ruleRepository.findAll();
     }
 }
