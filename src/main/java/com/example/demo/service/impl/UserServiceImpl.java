@@ -1,30 +1,31 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+@Service
+public class UserServiceImpl {
 
-@Service   // ✅ Spring creates the bean automatically
-public class UserServiceImpl implements UserService {
+    private final UserRepository repo;
+    private final PasswordEncoder encoder;
 
-    // Temporary in-memory storage (replace with DB later)
-    private final List<User> users = new ArrayList<>();
-
-    @Override
-    public User registerUser(User user) {
-        users.add(user);
-        return user;
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
+        this.repo = repo;
+        this.encoder = encoder;
     }
 
-    @Override
+    public User registerUser(User user) {
+        if (repo.findByEmail(user.getEmail()).isPresent()) {
+            throw new BadRequestException("Duplicate email");
+        }
+        user.setPassword(encoder.encode(user.getPassword()));
+        return repo.save(user);
+    }
+
     public User findByEmail(String email) {
-        return users.stream()
-                .filter(u -> u.getEmail() != null
-                        && u.getEmail().equals(email))
-                .findFirst()
-                .orElse(null);
+        return repo.findByEmail(email).orElse(null);
     }
 }
