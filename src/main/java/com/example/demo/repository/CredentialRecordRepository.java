@@ -8,7 +8,8 @@ import java.util.List;
 public interface CredentialRecordRepository
         extends JpaRepository<CredentialRecord, Long> {
 
-    List<CredentialRecord> findExpiredBefore(LocalDate date);
+    // 🔥 FIXED METHOD NAME
+    List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
     @Query("select c from CredentialRecord c where c.status = ?1")
     List<CredentialRecord> findByStatusUsingHql(String status);
@@ -17,5 +18,6 @@ public interface CredentialRecordRepository
     List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
 
     List<CredentialRecord> findByHolderId(Long holderId);
+
     CredentialRecord findByCredentialCode(String code);
 }
