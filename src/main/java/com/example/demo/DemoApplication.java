@@ -62,23 +62,29 @@ public class DemoApplication {
     }
 
     // =======================
-    // USER SERVICE BEAN ✅ FIXES NEW ERROR
-    // =======================
-    @Bean
-    public UserService userService() {
-        return new UserService() {
+@Bean
+public UserService userService() {
+    return new UserService() {
 
-            @Override
-            public Object register(Object request) {
-                // dummy implementation
-                return request;
-            }
+        @Override
+        public User register(User user) {
+            // dummy implementation
+            return user;
+        }
 
-            @Override
-            public Object login(Object request) {
-                // dummy implementation
-                return "LOGIN_SUCCESS";
-            }
-        };
-    }
+        @Override
+        public String login(String email, String password) {
+            // dummy implementation
+            return "LOGIN_SUCCESS";
+        }
+
+        @Override
+        public User findByEmail(String email) {
+            // dummy implementation
+            return null;
+        }
+    };
+}
+
+
 }
