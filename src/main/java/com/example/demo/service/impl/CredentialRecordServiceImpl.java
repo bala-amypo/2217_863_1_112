@@ -1,59 +1,45 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialRecord;
-import com.example.demo.service.CredentialRecordService;
+import com.example.demo.repository.CredentialRecordRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
-@Service   // ✅ Spring will create the bean automatically
-public class CredentialRecordServiceImpl implements CredentialRecordService {
+@Service
+public class CredentialRecordServiceImpl {
 
-    // Temporary in-memory storage (replace with DB later)
-    private final List<CredentialRecord> store = new ArrayList<>();
+    private final CredentialRecordRepository repo;
 
-    @Override
+    public CredentialRecordServiceImpl(CredentialRecordRepository repo) {
+        this.repo = repo;
+    }
+
     public CredentialRecord createCredential(CredentialRecord record) {
-        store.add(record);
-        return record;
-    }
-
-    @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-        for (int i = 0; i < store.size(); i++) {
-            CredentialRecord existing = store.get(i);
-            if (existing.getId() != null && existing.getId().equals(id)) {
-                store.set(i, updated);
-                return updated;
-            }
+        if (record.getStatus() == null) {
+            record.setStatus("VALID");
         }
-        return null;
+        return repo.save(record);
     }
 
-    @Override
+    public CredentialRecord updateCredential(Long id, CredentialRecord record) {
+        return repo.save(record);
+    }
+
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        List<CredentialRecord> result = new ArrayList<>();
-        for (CredentialRecord record : store) {
-            if (record.getHolderId() != null
-                    && record.getHolderId().equals(holderId)) {
-                result.add(record);
-            }
-        }
-        return result;
+        return repo.findByHolderId(holderId);
     }
 
-    @Override
     public CredentialRecord getCredentialByCode(String code) {
-        return store.stream()
-                .filter(r -> r.getCode() != null
-                        && r.getCode().equals(code))
-                .findFirst()
-                .orElse(null);
+        return repo.findByCredentialCode(code);
     }
 
-    @Override
-    public List<CredentialRecord> getAllCredentials() {
-        return store;
+    public void markExpiredIfNeeded(CredentialRecord r) {
+        if (r.getExpiryDate() != null &&
+            r.getExpiryDate().isBefore(LocalDate.now())) {
+            r.setStatus("EXPIRED");
+            repo.save(r);
+        }
     }
 }

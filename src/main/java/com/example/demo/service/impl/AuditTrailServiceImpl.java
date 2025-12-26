@@ -1,34 +1,29 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.service.AuditTrailService;
+import com.example.demo.repository.AuditTrailRecordRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Service   // ✅ This creates the Spring bean
-public class AuditTrailServiceImpl implements AuditTrailService {
+@Service
+public class AuditTrailServiceImpl {
 
-    // Temporary in-memory storage (replace with DB later)
-    private final List<AuditTrailRecord> store = new ArrayList<>();
+    private final AuditTrailRecordRepository repo;
 
-    @Override
-    public AuditTrailRecord logEvent(AuditTrailRecord record) {
-        store.add(record);
-        return record;
+    public AuditTrailServiceImpl(AuditTrailRecordRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
+    public void logEvent(AuditTrailRecord record) {
+        repo.save(record);
+    }
+
     public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
-        return store.stream()
-                .filter(r -> r.getCredentialId() != null
-                        && r.getCredentialId().equals(credentialId))
-                .toList();
+        return repo.findByCredentialId(credentialId);
     }
 
-    @Override
     public List<AuditTrailRecord> getAllLogs() {
-        return store;
+        return repo.findAll();
     }
 }

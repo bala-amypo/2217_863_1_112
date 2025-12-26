@@ -1,46 +1,59 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.entity.CredentialRecord;
 import com.example.demo.entity.VerificationRequest;
-import com.example.demo.service.VerificationRequestService;
+import com.example.demo.repository.VerificationRequestRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Service   // ✅ Spring will create the bean automatically
-public class VerificationRequestServiceImpl implements VerificationRequestService {
+@Service
+public class VerificationRequestServiceImpl {
 
-    // Temporary in-memory storage (replace with DB later)
-    private final List<VerificationRequest> store = new ArrayList<>();
+    private final VerificationRequestRepository repo;
+    private final CredentialRecordServiceImpl credentialService;
+    private final AuditTrailServiceImpl auditService;
 
-    @Override
-    public VerificationRequest initiateVerification(VerificationRequest request) {
-        store.add(request);
-        return request;
+    public VerificationRequestServiceImpl(
+            VerificationRequestRepository repo,
+            CredentialRecordServiceImpl credentialService,
+            AuditTrailServiceImpl auditService) {
+
+        this.repo = repo;
+        this.credentialService = credentialService;
+        this.auditService = auditService;
     }
 
-    @Override
-    public VerificationRequest processVerification(Long requestId) {
-        return store.stream()
-                .filter(r -> r.getId() != null && r.getId().equals(requestId))
-                .findFirst()
-                .orElse(null);
+    public VerificationRequest initiateVerification(VerificationRequest r) {
+        return repo.save(r);
     }
 
-    @Override
-    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        List<VerificationRequest> result = new ArrayList<>();
-        for (VerificationRequest req : store) {
-            if (req.getCredentialId() != null
-                    && req.getCredentialId().equals(credentialId)) {
-                result.add(req);
-            }
+    public VerificationRequest processVerification(Long id) {
+        VerificationRequest req = repo.findById(id).orElseThrow();
+        CredentialRecord record =
+                credentialService.getCredentialByCode(
+                        req.getCredentialId().toString());
+
+        if (record.getExpiryDate() != null &&
+            record.getExpiryDate().isBefore(java.time.LocalDate.now())) {
+            req.setStatus("FAILED");
+        } else {
+            req.setStatus("SUCCESS");
         }
-        return result;
+
+        req.setVerifiedAt(LocalDateTime.now());
+        auditService.logEvent(new AuditTrailRecord());
+
+        return repo.save(req);
     }
 
-    @Override
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return repo.findByCredentialId(credentialId);
+    }
+
     public List<VerificationRequest> getAllRequests() {
-        return store;
+        return repo.findAll();
     }
 }
