@@ -16,7 +16,7 @@ public class VerificationRuleServiceImpl {
         this.repo = repo;
     }
 
-    // Create or update a rule
+    // Create or update rule
     public VerificationRule createRule(VerificationRule rule) {
         return repo.save(rule);
     }
@@ -37,14 +37,5 @@ public class VerificationRuleServiceImpl {
     // Get rule by id
     public VerificationRule getRuleById(Long id) {
         return repo.findById(id).orElse(null);
-    }
-
-    // Disable a rule
-    public void deactivateRule(Long id) {
-        VerificationRule rule = getRuleById(id);
-        if (rule != null) {
-            rule.setActive(false);
-            repo.save(rule);
-        }
     }
 }
