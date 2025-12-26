@@ -9,6 +9,8 @@ import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.service.AuditTrailService;
 import com.example.demo.service.UserService;
 import com.example.demo.servlet.SimpleStatusServlet;
+import com.example.demo.entity.User;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,15 +69,9 @@ public UserService userService() {
     return new UserService() {
 
         @Override
-        public User register(User user) {
+        public User registerUser(User user) {
             // dummy implementation
             return user;
-        }
-
-        @Override
-        public String login(String email, String password) {
-            // dummy implementation
-            return "LOGIN_SUCCESS";
         }
 
         @Override
