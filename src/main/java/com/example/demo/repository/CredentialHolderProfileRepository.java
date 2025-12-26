@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.*;
 import java.time.LocalDate;
 import java.util.*;
 
-public interface CredentialHolderProfileRepository extends JpaRepository<CredentialHolderProfile, Long> {
-    Optional<CredentialHolderProfile> findByEmail(String email);
+public interface CredentialHolderProfileRepository
+        extends JpaRepository<CredentialHolderProfile, Long> {
 }

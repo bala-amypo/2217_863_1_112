@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface VerificationRuleRepository extends JpaRepository<VerificationRule, Long> {
-    List<VerificationRule> findByActiveTrue();
+public interface VerificationRuleRepository
+        extends JpaRepository<VerificationRule, Long> {
 }
