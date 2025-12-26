@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface CredentialRecordRepository extends JpaRepository<CredentialRecord, Long> {
+public interface CredentialRecordRepository
+        extends JpaRepository<CredentialRecord, Long> {
 
     List<CredentialRecord> findExpiredBefore(LocalDate date);
 
-    @Query("select c from CredentialRecord c where c.status=?1")
+    @Query("select c from CredentialRecord c where c.status = ?1")
     List<CredentialRecord> findByStatusUsingHql(String status);
 
     @Query("select c from CredentialRecord c where c.issuer=?1 and c.credentialType=?2")

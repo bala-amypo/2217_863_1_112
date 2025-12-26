@@ -21,4 +21,8 @@ public class AuditTrailService {
     public List<AuditTrailRecord> getLogsByCredential(Long id) {
         return repo.findByCredentialId(id);
     }
+
+    public List<AuditTrailRecord> getAllLogs() {
+        return repo.findAll();
+    }
 }

@@ -31,9 +31,11 @@ public class VerificationRequestService {
 
     public VerificationRequest processVerification(Long id) {
         VerificationRequest req = vrRepo.findById(id).orElseThrow();
-        CredentialRecord c = credService.getCredentialByCode(req.getCredentialId().toString());
+        CredentialRecord c =
+                credService.getCredentialByCode(req.getCredentialId().toString());
 
-        if (c.getExpiryDate() != null && c.getExpiryDate().isBefore(java.time.LocalDate.now())) {
+        if (c.getExpiryDate() != null &&
+                c.getExpiryDate().isBefore(java.time.LocalDate.now())) {
             req.setStatus("FAILED");
         } else {
             req.setStatus("SUCCESS");
@@ -44,7 +46,11 @@ public class VerificationRequestService {
         return vrRepo.save(req);
     }
 
-    public List<VerificationRequest> getRequestsByCredential(Long id) {
-        return vrRepo.findByCredentialId(id);
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return vrRepo.findByCredentialId(credentialId);
+    }
+
+    public List<VerificationRequest> getAllRequests() {
+        return vrRepo.findAll();
     }
 }

@@ -32,8 +32,9 @@ public class CredentialRecordService {
         return repo.findByCredentialCode(code);
     }
 
-    public void markExpired(CredentialRecord c) {
-        if (c.getExpiryDate() != null && c.getExpiryDate().isBefore(LocalDate.now())) {
+    public void markExpiredIfNeeded(CredentialRecord c) {
+        if (c.getExpiryDate() != null &&
+                c.getExpiryDate().isBefore(LocalDate.now())) {
             c.setStatus("EXPIRED");
             repo.save(c);
         }

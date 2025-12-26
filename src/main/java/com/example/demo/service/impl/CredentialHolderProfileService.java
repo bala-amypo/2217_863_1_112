@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.CredentialHolderProfile;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.*;
+import com.example.demo.repository.CredentialHolderProfileRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -20,7 +20,8 @@ public class CredentialHolderProfileService {
     }
 
     public CredentialHolderProfile getHolderById(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found"));
     }
 
     public List<CredentialHolderProfile> getAllHolders() {
