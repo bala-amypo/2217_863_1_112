@@ -9,8 +9,6 @@ import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.service.AuditTrailService;
 import com.example.demo.service.UserService;
 import com.example.demo.servlet.SimpleStatusServlet;
-import com.example.demo.entity.User;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,23 +62,23 @@ public class DemoApplication {
     }
 
     // =======================
-@Bean
-public UserService userService() {
-    return new UserService() {
+    // USER SERVICE BEAN ✅ FIXES NEW ERROR
+    // =======================
+    @Bean
+    public UserService userService() {
+        return new UserService() {
 
-        @Override
-        public User registerUser(User user) {
-            // dummy implementation
-            return user;
-        }
+            @Override
+            public Object register(Object request) {
+                // dummy implementation
+                return request;
+            }
 
-        @Override
-        public User findByEmail(String email) {
-            // dummy implementation
-            return null;
-        }
-    };
-}
-
-
+            @Override
+            public Object login(Object request) {
+                // dummy implementation
+                return "LOGIN_SUCCESS";
+            }
+        };
+    }
 }
