@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AuditTrailRecordRepository
-        extends JpaRepository<AuditTrailRecord, Long> {
+public interface AuditTrailRecordRepository extends JpaRepository<AuditTrailRecord, Long> {
     List<AuditTrailRecord> findByCredentialId(Long credentialId);
 }
