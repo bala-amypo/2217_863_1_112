@@ -17,46 +17,79 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Authentication endpoints for login and registration")
 public class AuthController {
-    
+
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    
-    public AuthController(UserService userService, 
-                         AuthenticationManager authenticationManager, 
-                         JwtUtil jwtUtil) {
+    private final PasswordEncoder passwordEncoder; // ✅ ADD THIS
+
+    public AuthController(UserService userService,
+                          AuthenticationManager authenticationManager,
+                          JwtUtil jwtUtil,
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
-    
+
     @PostMapping("/register")
     @Operation(summary = "Register new user", description = "Create a new user account")
     public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request) {
+
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+
+        // ✅ ENCODE PASSWORD (CRITICAL FIX)
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
         user.setRole(request.getRole() != null ? request.getRole() : "VIEWER");
-        
+
         User savedUser = userService.registerUser(user);
-        
-        String token = jwtUtil.generateToken(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
-        JwtResponse response = new JwtResponse(token, savedUser.getId(), 
-                                               savedUser.getEmail(), savedUser.getRole());
-        return ResponseEntity.ok(response);
+
+        String token = jwtUtil.generateToken(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
+
+        JwtResponse response = new JwtResponse(
+                token,
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
+
+        return ResponseEntity.ok(response); // ✅ BODY IS RETURNED
     }
-    
+
     @PostMapping("/login")
     @Operation(summary = "Login user", description = "Authenticate user and generate JWT token")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest request) {
+
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
         );
-        
+
         User user = userService.findByEmail(request.getEmail());
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
-        JwtResponse response = new JwtResponse(token, user.getId(), user.getEmail(), user.getRole());
-        return ResponseEntity.ok(response);
+
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        JwtResponse response = new JwtResponse(
+                token,
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        return ResponseEntity.ok(response); // ✅ BODY IS RETURNED
     }
 }
