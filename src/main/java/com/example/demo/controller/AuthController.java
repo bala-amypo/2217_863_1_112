@@ -15,35 +15,30 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Authentication", description = "Authentication endpoints for login and registration")
+@Tag(name = "Authentication", description = "Authentication endpoints")
 public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder; // ✅ ADD THIS
 
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
-                          JwtUtil jwtUtil,
-                          PasswordEncoder passwordEncoder) {
+                          JwtUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
     }
 
+    // ✅ REGISTER
     @PostMapping("/register")
-    @Operation(summary = "Register new user", description = "Create a new user account")
+    @Operation(summary = "Register new user")
     public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request) {
 
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-
-        // ✅ ENCODE PASSWORD (CRITICAL FIX)
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
+        user.setPassword(request.getPassword()); // ✅ RAW password
         user.setRole(request.getRole() != null ? request.getRole() : "VIEWER");
 
         User savedUser = userService.registerUser(user);
@@ -61,11 +56,12 @@ public class AuthController {
                 savedUser.getRole()
         );
 
-        return ResponseEntity.ok(response); // ✅ BODY IS RETURNED
+        return ResponseEntity.ok(response);
     }
 
+    // ✅ LOGIN
     @PostMapping("/login")
-    @Operation(summary = "Login user", description = "Authenticate user and generate JWT token")
+    @Operation(summary = "Login user")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest request) {
 
         authenticationManager.authenticate(
@@ -90,6 +86,6 @@ public class AuthController {
                 user.getRole()
         );
 
-        return ResponseEntity.ok(response); // ✅ BODY IS RETURNED
+        return ResponseEntity.ok(response);
     }
 }
